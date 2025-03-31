@@ -71,7 +71,7 @@ class AnimalPrediction:
         id (int): Уникальный идентификатор события
         image (str): Путь к изображению
         creator (User): Создатель события
-        anim1al_type (AnimalType): Определенный моделью тип животного
+        animal_type (AnimalType): Определенный моделью тип животного
     """
 
     id: int
@@ -118,7 +118,7 @@ def main() -> None:
     try:
         user = User(id=1, email="test@mail.ru", password="secure_password123")
 
-        for i in range(10):
+        for i in range(1, 11):
             pet = AnimalPrediction(id=i, image=f"my_animals/pet_{i}.jpg", creator=user)
             user.add_animal(pet)
 
