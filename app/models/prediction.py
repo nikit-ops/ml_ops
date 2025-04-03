@@ -43,5 +43,5 @@ class AnimalPrediction:
 
     id: int
     image: str
-    animal_type: AnimalType
+    animal_type: "AnimalType"
     task: "MLTask"

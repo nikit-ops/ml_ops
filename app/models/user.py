@@ -32,6 +32,10 @@ class User:
     prediction_history: "PredictionHistory" = field(init=False)
 
     def __post_init__(self) -> None:
+        from models.balance import Balance  # Runtime import
+        from models.transaction import TransactionHistory
+        from models.prediction import PredictionHistory
+
         self._validate_email()
         if self._validate_password():
             self.password = bcrypt.hashpw(
