@@ -1,75 +1,31 @@
-from dataclasses import dataclass
+from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, TYPE_CHECKING
 from enum import Enum
+from datetime import datetime
 
-if TYPE_CHECKING:
-    from models.user import User
-    from models.prediction import AnimalPrediction
-    from models.mlmodel import Model, AnimalType
-    from models.transaction import Transaction, TransactionType
+# if TYPE_CHECKING:
+#     from .prediction import Prediction
+#     from .user import User
 
-
-class MLTaskStatus(Enum):
+class MLTaskStatus(str, Enum):
     PENDING = "pending"
     COMPLETED = "completed"
     FAILED = "failed"
 
+class AnimalType(str, Enum):
+    CAT = "cat"
+    DOG = "dog"
+    UNKNOWN = "unknown"
 
-@dataclass
-class MLTask:
-    """
-    Класс задачи машинного обучения.
-
-    Attributes:
-        id (int): Уникальный идентификатор
-        image_path (str): Путь к изображению
-        user (User): Инициатор задачи
-        model (Model): Используемая модель
-        cost (float): Стоимость предсказания
-        status (MLTaskStatus): Статус выполнения
-        result (Optional[AnimalType]: Результат предсказания
-    """
-
-    id: int
+class MLTask(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     image_path: str
-    user: "User"
-    model: "Model"
-    cost: float = 10.0
-    status: MLTaskStatus = MLTaskStatus.PENDING
-    result: Optional[AnimalType] = None
+    cost: float = Field(default=10.0)
+    status: MLTaskStatus = Field(default=MLTaskStatus.PENDING)
+    result: Optional["AnimalType"] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    user_id: int = Field(foreign_key="user.id")
 
-    def process(self) -> None:
-        """Выполняет предсказание и обновляет статус"""
-        try:
-            # Проверяем баланс
-            if self.user.balance.amount < self.cost:
-                raise ValueError("Insufficient funds to process prediction")
-
-            # Выполняем предсказание
-            self.result = self.model.predict(self.image_path)
-
-            # Списание средств
-            self.user.balance.withdraw(self.cost)
-
-            # Создаем запись о предсказании
-            prediction = AnimalPrediction(
-                id=self.id, image=self.image_path, animal_type=self.result, task=self
-            )
-            self.user.prediction_history.add_prediction(prediction)
-
-            # Обновляем статус
-            self.status = MLTaskStatus.COMPLETED
-
-            # Добавляем транзакцию
-            self.user.transaction_history.add_transaction(
-                Transaction(
-                    id=len(self.user.transaction_history.transactions) + 1,
-                    amount=-self.cost,
-                    type=TransactionType.PREDICTION_PAYMENT,
-                    description=f"Prediction #{self.id}",
-                )
-            )
-
-        except Exception as e:
-            self.status = MLTaskStatus.FAILED
-            raise e
+    # Relationships
+    # user: Optional["User"] = Relationship(back_populates="tasks")
+    # prediction: Optional["Prediction"] = Relationship(back_populates="task")

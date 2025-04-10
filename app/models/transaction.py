@@ -1,38 +1,22 @@
-from dataclasses import dataclass, field
-from typing import List
+from sqlmodel import SQLModel, Field, Relationship
+from typing import List, Optional, TYPE_CHECKING
 from enum import Enum
+from datetime import datetime
 
+if TYPE_CHECKING:
+    from .user import User
 
-class TransactionType(Enum):
+class TransactionType(str, Enum):
     DEPOSIT = "deposit"
     WITHDRAWAL = "withdrawal"
     PREDICTION_PAYMENT = "prediction_payment"
 
-
-@dataclass
-class Transaction:
-    """
-    Класс финансовой транзакции.
-
-    Attributes:
-        id (int): Уникальный идентификатор
-        amount (float): Сумма операции
-        type (TransactionType): Тип операции
-        description (str): Описание операции
-    """
-
-    id: int
+class Transaction(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     amount: float
     type: TransactionType
     description: str = ""
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    user_id: int = Field(foreign_key="user.id")
 
-
-@dataclass
-class TransactionHistory:
-    """История финансовых операций пользователя"""
-
-    transactions: List[Transaction] = field(default_factory=list)
-
-    def add_transaction(self, transaction: Transaction) -> None:
-        """Добавляет новую транзакцию"""
-        self.transactions.append(transaction)
+    user: List["User"] = Relationship(back_populates="transactions")
