@@ -13,6 +13,8 @@ services:
       - ./app:/app
     networks:
       - ml-task-network
+    depends_on:
+      - database
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
       interval: 30s

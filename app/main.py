@@ -12,9 +12,12 @@ from sqlmodel import Session
 from models.user import User
 from models.balance import Balance
 from models.mlmodel import MlModel
+import time
 
 
 if __name__ == "__main__":
+    # workaoround to wait for the database to be ready
+    time.sleep(2)
 
     init_db()
     print("Init db has been success")
