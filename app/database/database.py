@@ -23,9 +23,9 @@ def init_db():
 
     with Session(engine) as session:
         try:
-            test_user = User(email="test@mail.test", password="password123")
+            test_user = User(email="admin@mail.ru", password="password123")
             test_user_2 = User(email="test2@mail.test", password="password123")
-            create_user(test_user, session)
+            create_user(test_user, session, is_admin=True)
             create_user(test_user_2, session)
 
             # Deposit sufficient funds into user balances

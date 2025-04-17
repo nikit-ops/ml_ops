@@ -9,7 +9,14 @@ class Settings(BaseSettings):
     DB_USER: Optional[str] = None
     DB_PASS: Optional[str] = None
     DB_NAME: Optional[str] = None
+
+    # Application settings
+    APP_NAME: Optional[str] = None
+    APP_DESCRIPTION: Optional[str] = None
     IS_DEBUG: bool = False
+    API_VERSION: Optional[str] = None
+
+    REDIS_PASSWORD: Optional[str] = None
 
     @property
     def DATABASE_URL_asyncpg(self):

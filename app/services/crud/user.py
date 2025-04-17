@@ -38,14 +38,24 @@ def check_password(hashed_password: str, password: str) -> bool:
     """Check if a password matches its hash."""
     return bcrypt.checkpw(password.encode("utf-8"), hashed_password.encode("utf-8"))
 
-def create_user(user: User, session) -> User:
-    """Create a new user with email and password validation, and initialize their balance."""
+def create_user(user: User, session, is_admin: bool = False) -> User:
+    """
+    Create a new user with email and password validation, and initialize their balance.
+
+    Args:
+        user: User object containing email and password
+        session: Database session
+        is_admin: Boolean flag to set the user as an admin
+
+    Returns:
+        User: The created user object
+    """
     validate_email(user.email)
     validate_password(user.password)
     user.password = hash_password(user.password)
+    user.is_admin = is_admin  # Set the is_admin flag
 
     session.add(user)
-    session.commit()
     session.refresh(user)
 
     balance = Balance(user_id=user.id, amount=0.0)
