@@ -13,7 +13,6 @@ def create_balance(session: Session, user_id: int, initial_amount: float = 0.0) 
 
     balance = Balance(user_id=user_id, amount=initial_amount)
     session.add(balance)
-    session.commit()
     session.refresh(balance)
 
     transaction = Transaction(
@@ -52,7 +51,6 @@ def deposit(session: Session, balance_id: int, amount: float) -> Balance:
 
     balance.amount += amount
     session.add(balance)
-    session.commit()
     session.refresh(balance)
 
     transaction = Transaction(

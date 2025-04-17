@@ -1,10 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship, Column, AutoString
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from datetime import datetime
-
-if TYPE_CHECKING:
-    from .user import User
-    from .mltask import MLTask, AnimalType
 
 class Prediction(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

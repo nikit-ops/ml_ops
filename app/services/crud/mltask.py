@@ -22,7 +22,6 @@ def create_mltask_for_user(
 
     balance.amount -= cost
     session.add(balance)
-    session.commit()
 
     transaction = Transaction(
         user_id=user_id,
@@ -31,7 +30,6 @@ def create_mltask_for_user(
         description="MLTask creation cost",
     )
     session.add(transaction)
-    session.commit()
 
     mltask = MLTask(
         user_id=user_id,

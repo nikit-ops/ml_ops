@@ -1,11 +1,7 @@
 from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from enum import Enum
 from datetime import datetime
-
-# if TYPE_CHECKING:
-#     from .prediction import Prediction
-#     from .user import User
 
 class MLTaskStatus(str, Enum):
     PENDING = "pending"
